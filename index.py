@@ -1,9 +1,13 @@
-import yaml, os, docx
-from docx.document import Document as DOCument
-from docx.shared import Inches, Pt
-from docx.table import _Column, _Row, _Cell
+import os
 from copy import deepcopy
+
+import docx
+import yaml
+from docx.document import Document as DOCument
 from docx.enum.style import WD_STYLE_TYPE
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.shared import Inches, Pt
+from docx.table import _Cell, _Column, _Row
 
 with open("config.yml", "r") as f:
     config_yml = yaml.load(f, Loader=yaml.FullLoader)
@@ -74,7 +78,7 @@ class Converter:
         self.createDocx()
 
     def createDocx(self):
-        doc: DOCument = docx.Document()
+        doc: DOCument = docx.Document("./template.docx")
         self.createTable(doc)
         doc.save("sample.docx")
 
@@ -86,65 +90,21 @@ class Converter:
             self.ultimatum = yaml.load(f, Loader=yaml.FullLoader)
 
     def createTable(self, doc: DOCument):
-        no_com_act = len(self.ultimatum["completed_activities"])
-        no_ip_act = len(self.ultimatum["in_progress_activities"])
-        no_pla_act = len(self.ultimatum["planned_activities"])
-        no_rows = 10 + no_com_act + no_ip_act + no_pla_act
-        table = doc.add_table(rows=no_rows, cols=4, style=doc.styles["Table Grid"])
-        #  First row --------------
-        second_col: _Cell = table.rows[0].cells[1]
-        for col in table.rows[0].cells[2:]:
-            second_col.merge(col)
-        #  Second row --------------
-        second_col: _Cell = table.rows[1].cells[1]
-        for col in table.rows[1].cells[2:]:
-            second_col.merge(col)
-        #  Activities Completed row --------------
-        first_col: _Cell = table.rows[5].cells[0]
-        for col in table.rows[5].cells[1:]:
-            first_col.merge(col)
-        #  In Progress row --------------
-        in_progress_row = 6 + no_com_act
-        first_col: _Cell = table.rows[in_progress_row].cells[0]
-        for col in table.rows[in_progress_row].cells[1:]:
-            first_col.merge(col)
-        #  Plan for Next Week row --------------
-        planned_row = in_progress_row + 1 + no_ip_act
-        first_col: _Cell = table.rows[planned_row].cells[0]
-        for col in table.rows[planned_row].cells[1:]:
-            first_col.merge(col)
-            table.autofit = False
-        table.rows[-1].cells[0].width = Inches(3)
-        table.rows[0].cells[0].width = Inches(0.5)
+        table = doc.tables[0]
+        C_ProjectID = doc.styles.add_style("C_ProjectID", WD_STYLE_TYPE.PARAGRAPH)
+        C_ProjectID.font.size = Pt(15)
+        C_ProjectID.font.bold = True
+        # Project ID
+        para: _Cell = table.cell(0, 3).paragraphs[0]
+        para.style = doc.styles["C_ProjectID"]
+        para.text = config_yml["project"]["id"]
+        para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        # Project Title
+        para: _Cell = table.cell(1, 3).paragraphs[0]
+        para.style = doc.styles["C_ProjectID"]
+        para.text = config_yml["project"]["title"]
+        table.add_row()
 
 
 # Week()
-# Converter()
-"""
-1
-11/01/2021
-17/01/2021
-1
-understanding fundamental concepts of python
-12/01/2021
-1
-change in problem statement
-14/01/2021
-1
-understanding of concepts
-18/02/2021
-
-"""
-
-doc: DOCument = docx.Document("./template.docx")
-for i in doc.tables:
-    print(dir(i))
-table = doc.tables[0]
-normal_style = doc.styles.add_style("C_ProjectID", WD_STYLE_TYPE.PARAGRAPH)
-normal_style.font.size = Pt(15)
-normal_style.font.bold = True
-para: _Cell = table.cell(0, 3).paragraphs[0]
-para.style = doc.styles["C_ProjectID"]
-para.text = config_yml["project"]["id"]
-table.add_row()
-doc.save("simple.docx")
+Converter()
