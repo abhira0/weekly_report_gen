@@ -1,0 +1,12 @@
+project:
+  id: "<project-id>"
+  title: "<project-title>"
+team:
+- name: "<name-1>"
+  srn: "<srn-1>"
+- name: "<name-2>"
+  srn: "<srn-2>"
+- name: "<name-3>"
+  srn: "<srn-3>"
+- name: "<name-4>"
+  srn: "<srn-4>"
