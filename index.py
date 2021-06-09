@@ -1,7 +1,7 @@
 import os
 from copy import deepcopy
 
-import docx
+import docx, docx2pdf
 import yaml
 from docx.document import Document as DOCument
 from docx.enum.style import WD_STYLE_TYPE
@@ -82,7 +82,9 @@ class TableEntries:
         C_ProjectID.font.size = Pt(20)
         C_ProjectID.font.bold = True
         # Style -  Project Title
-        C_ProjectID = self.doc.styles.add_style("C_ProjectTitle", WD_STYLE_TYPE.PARAGRAPH)
+        C_ProjectID = self.doc.styles.add_style(
+            "C_ProjectTitle", WD_STYLE_TYPE.PARAGRAPH
+        )
         C_ProjectID.font.size = Pt(15)
         C_ProjectID.font.bold = True
         # Project ID
@@ -177,21 +179,24 @@ class TableEntries:
 
 class Converter:
     def __init__(self) -> None:
+        self.cwd = os.path.dirname(os.path.realpath(__file__))
         self.setUltimatum()
+        self.file_name = "week" + str(self.ultimatum["week_no"])
         self.createDocx()
+        self.saveAsPDF()
 
     def setUltimatum(self):
         # week_no = int(input("Week No: "))
         week_no = 1
-        cwd = os.path.dirname(os.path.realpath(__file__))
-        path_ = f"{cwd}\\weekConfigs"
+        path_ = f"{self.cwd}\\weekConfigs"
         with open(f"{path_}\\{week_no}.yml", "r") as f:
             self.ultimatum = yaml.load(f, Loader=yaml.FullLoader)
 
     def createDocx(self):
-        self.doc: DOCument = docx.Document("./template.docx")
+        self.doc: DOCument = docx.Document(f"{self.cwd}\\template\\template.docx")
         self.createTable()
-        self.doc.save("sample.docx")
+        YouTil.makedir(f"{self.cwd}\\reports\\")
+        self.doc.save(f"{self.cwd}\\reports\\{self.file_name}.docx")
 
     def createTable(self):
         te = TableEntries(self.doc, self.ultimatum)
@@ -199,7 +204,12 @@ class Converter:
         te.writeWeekDates()
         te.writeTeamDetails()
         te.writeActivities()
-        # self.table.add_row()
+
+    def saveAsPDF(self):
+        path1 = f"{self.cwd}\\reports\\{self.file_name}.docx"
+        path2 = f"{self.cwd}\\reports\\{self.file_name}.pdf"
+        print("Converting DOCX to PDF")
+        docx2pdf.convert(path1, path2)
 
 
 # Week()
