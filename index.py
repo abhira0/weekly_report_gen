@@ -178,18 +178,17 @@ class TableEntries:
 
 
 class Converter:
-    def __init__(self) -> None:
+    def __init__(self, week_no: int = None) -> None:
         self.cwd = os.path.dirname(os.path.realpath(__file__))
+        self.week_no = week_no
         self.setUltimatum()
         self.file_name = "week" + str(self.ultimatum["week_no"])
-        self.createDocx()
-        self.saveAsPDF()
 
     def setUltimatum(self):
-        # week_no = int(input("Week No: "))
-        week_no = 1
+        if not self.week_no:
+            self.week_no = int(input("Week No: "))
         path_ = f"{self.cwd}\\weekConfigs"
-        with open(f"{path_}\\{week_no}.yml", "r") as f:
+        with open(f"{path_}\\{self.week_no}.yml", "r") as f:
             self.ultimatum = yaml.load(f, Loader=yaml.FullLoader)
 
     def createDocx(self):
@@ -213,4 +212,6 @@ class Converter:
 
 
 # Week()
-Converter()
+con = Converter(1)
+con.createDocx()
+con.saveAsPDF()
