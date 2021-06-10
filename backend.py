@@ -8,6 +8,7 @@ from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Inches, Pt
 from docx.table import _Cell, _Column, _Row
+from termcolor import cprint
 
 with open("config.yml", "r") as f:
     config_yml = yaml.load(f, Loader=yaml.FullLoader)
@@ -28,32 +29,37 @@ class YouTil:
 
 
 class Week:
-    def __init__(self) -> None:
-        self.setWeekDates()
-        self.completed_activities = self.getActivities("Activities Completed")
-        self.in_progress_activities = self.getActivities("In Progress")
-        self.planned_activities = self.getActivities("Plan for Next Week")
-        self.ultimatum = self.getUltimatum()
-        self.dumpUltimatum()
+    def __init__(self, week_no: int = None) -> None:
+        self.week_no = week_no if week_no else int(input("Week Number        : "))
 
-    def setWeekDates(self):
+    def getInfo(self):
+        self._setWeekDates()
+        self.completed_activities = self._getActivities("Activities Completed")
+        self.in_progress_activities = self._getActivities("In Progress")
+        self.planned_activities = self._getActivities("Plan for Next Week")
+        self.ultimatum = self._getUltimatum()
+        print(self.ultimatum)
+        self._dumpUltimatum()
+
+    def _setWeekDates(self):
         print("-" * 15 + " Dates " + "-" * 15)
-        self.week_no = int(input("Week Number        : "))
         self.starting_date = input("Week Starting Date : ")
         self.ending_date = input("Week Ending Date   : ")
 
-    def getActivities(self, activity_type):
+    def _getActivities(self, activity_type):
         print("-" * 15 + f" {activity_type} " + "-" * 15)
-        return [
-            self.getTaskDetails(c + 1) for c in range(int(input("Number of tasks: ")))
-        ]
+        try:
+            count = int(input("Number of tasks: "))
+        except:
+            count = 0
+        return [self._getTaskDetails(c + 1) for c in range(count)]
 
-    def getTaskDetails(self, count):
+    def _getTaskDetails(self, count):
         task_description = input(f"{count}. Task Description: ")
         task_date = input(f"{count}. Date            : ")
         return {"task_description": task_description, "task_date": task_date}
 
-    def getUltimatum(self):
+    def _getUltimatum(self):
         return {
             "week_no": self.week_no,
             "week_dates": {"start": self.starting_date, "end": self.ending_date},
@@ -62,12 +68,13 @@ class Week:
             "planned_activities": self.planned_activities,
         }
 
-    def dumpUltimatum(self):
+    def _dumpUltimatum(self):
         cwd = os.path.dirname(os.path.realpath(__file__))
         path_ = f"{cwd}\\weekConfigs"
         YouTil.makedir(path_)
         with open(f"{path_}\\{self.week_no}.yml", "w") as f:
             f.write(yaml.dump(self.ultimatum, sort_keys=False))
+        cprint(f"yml file saved at .\\weekConfigs\\{self.week_no}.yml", "green")
 
 
 class TableEntries:
@@ -180,24 +187,34 @@ class TableEntries:
 class Converter:
     def __init__(self, week_no: int = None) -> None:
         self.cwd = os.path.dirname(os.path.realpath(__file__))
-        self.week_no = week_no
-        self.setUltimatum()
+        self.week_no = week_no if week_no else int(input("Week No: "))
+        self._setUltimatum()
         self.file_name = "week" + str(self.ultimatum["week_no"])
 
-    def setUltimatum(self):
-        if not self.week_no:
-            self.week_no = int(input("Week No: "))
+    def _setUltimatum(self):
         path_ = f"{self.cwd}\\weekConfigs"
-        with open(f"{path_}\\{self.week_no}.yml", "r") as f:
-            self.ultimatum = yaml.load(f, Loader=yaml.FullLoader)
+        if os.path.exists(f"{path_}\\{self.week_no}.yml"):
+            with open(f"{path_}\\{self.week_no}.yml", "r") as f:
+                self.ultimatum = yaml.load(f, Loader=yaml.FullLoader)
+        else:
+            cprint(
+                "Please build the week YAML file initially before creating the docx|pdf",
+                "red",
+            )
+            quit(0)
 
-    def createDocx(self):
+    def createDocx(self, verbose=False):
         self.doc: DOCument = docx.Document(f"{self.cwd}\\template\\template.docx")
-        self.createTable()
+        self._createTable()
         YouTil.makedir(f"{self.cwd}\\reports\\")
         self.doc.save(f"{self.cwd}\\reports\\{self.file_name}.docx")
+        if verbose:
+            cprint(f"docx saved at .\\reports\\{self.file_name}.docx", "green")
 
-    def createTable(self):
+    def flushDocx(self):
+        os.remove(f"{self.cwd}\\reports\\{self.file_name}.docx")
+
+    def _createTable(self):
         te = TableEntries(self.doc, self.ultimatum)
         te.writeProjectDetails()
         te.writeWeekDates()
@@ -205,13 +222,9 @@ class Converter:
         te.writeActivities()
 
     def saveAsPDF(self):
+        self.createDocx()
         path1 = f"{self.cwd}\\reports\\{self.file_name}.docx"
         path2 = f"{self.cwd}\\reports\\{self.file_name}.pdf"
         print("Converting DOCX to PDF")
         docx2pdf.convert(path1, path2)
-
-
-# Week()
-con = Converter(1)
-con.createDocx()
-con.saveAsPDF()
+        cprint(f"docx saved at .\\reports\\{self.file_name}.docx", "green")
