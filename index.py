@@ -1,7 +1,7 @@
 import os
-from copy import deepcopy
 
-import docx, docx2pdf
+import docx
+import docx2pdf
 import yaml
 from docx.document import Document as DOCument
 from docx.enum.style import WD_STYLE_TYPE
