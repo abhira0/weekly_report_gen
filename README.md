@@ -1,2 +1,2 @@
-# pesu-capstone-weekly-report-gen
+# weekly_report_gen
  PESU Capstone Weekly Report Generator
