@@ -198,7 +198,7 @@ class Converter:
                 self.ultimatum = yaml.load(f, Loader=yaml.FullLoader)
         else:
             cprint(
-                "Please build the week YAML file initially before creating the docx|pdf",
+                "Please build the week YAML (by using -b flag) file initially before creating the docx|pdf",
                 "red",
             )
             quit(0)
