@@ -38,7 +38,7 @@ class Week:
         self.in_progress_activities = self._getActivities("In Progress")
         self.planned_activities = self._getActivities("Plan for Next Week")
         self.ultimatum = self._getUltimatum()
-        print(self.ultimatum)
+        # print(self.ultimatum)
         self._dumpUltimatum()
 
     def _setWeekDates(self):
@@ -74,7 +74,7 @@ class Week:
         YouTil.makedir(path_)
         with open(f"{path_}\\{self.week_no}.yml", "w") as f:
             f.write(yaml.dump(self.ultimatum, sort_keys=False))
-        cprint(f"yml file saved at .\\weekConfigs\\{self.week_no}.yml", "green")
+        cprint(f"YML file saved at .\\weekConfigs\\{self.week_no}.yml", "green")
 
 
 class TableEntries:
@@ -198,7 +198,7 @@ class Converter:
                 self.ultimatum = yaml.load(f, Loader=yaml.FullLoader)
         else:
             cprint(
-                "Please build the week YAML (by using -b flag) file initially before creating the docx|pdf",
+                "Please build the week YAML (by using -b flag) before creating the docx|pdf",
                 "red",
             )
             quit(0)
@@ -227,4 +227,4 @@ class Converter:
         path2 = f"{self.cwd}\\reports\\{self.file_name}.pdf"
         print("Converting DOCX to PDF")
         docx2pdf.convert(path1, path2)
-        cprint(f"docx saved at .\\reports\\{self.file_name}.docx", "green")
+        cprint(f"docx saved at .\\reports\\{self.file_name}.pdf", "green")
