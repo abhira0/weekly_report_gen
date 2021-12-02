@@ -3,33 +3,33 @@ week_dates:
   start: 11/01/2021
   end: 17/01/2021
 completed_activities:
-- task_description: Understanding fundamental concepts in python
-  task_date: 12/01/2021
-- task_description: Understanding fundamental concepts in python
-  task_date: 12/01/2021
-- task_description: Understanding fundamental concepts in python
-  task_date: 12/01/2021
+  - task_description: Understanding fundamental concepts in python
+    task_date: 12/01/2021
+  - task_description: Understanding fundamental concepts in python
+    task_date: 12/01/2021
+  - task_description: Understanding fundamental concepts in python
+    task_date: 12/01/2021
 in_progress_activities:
-- task_description: Change of Problem statement of python platform
-  task_date: 14/01/2021
-- task_description: Research related to python and its platform
-  task_date: 15/01/2021
-- task_description: Change of Problem statement of python platform
-  task_date: 14/01/2021
-- task_description: Research related to python and its platform
-  task_date: 15/01/2021
-- task_description: Change of Problem statement of python platform
-  task_date: 14/01/2021
-- task_description: Research related to python and its platform
-  task_date: 15/01/2021
+  - task_description: Change of Problem statement of python platform
+    task_date: 14/01/2021
+  - task_description: Research related to python and its platform
+    task_date: 15/01/2021
+  - task_description: Change of Problem statement of python platform
+    task_date: 14/01/2021
+  - task_description: Research related to python and its platform
+    task_date: 15/01/2021
+  - task_description: Change of Problem statement of python platform
+    task_date: 14/01/2021
+  - task_description: Research related to python and its platform
+    task_date: 15/01/2021
 planned_activities:
-- task_description: Understanding of concepts, finding paper related to python
-  task_date: 18/02/2021
-- task_description: Understanding of concepts, finding paper related to python
-  task_date: 18/02/2021
-- task_description: Understanding of concepts, finding paper related to python
-  task_date: 18/02/2021
-- task_description: Understanding of concepts, finding paper related to python
-  task_date: 18/02/2021
-- task_description: Understanding of concepts, finding paper related to python
-  task_date: 18/02/2021
+  - task_description: Understanding of concepts, finding paper related to python
+    task_date: 18/02/2021
+  - task_description: Understanding of concepts, finding paper related to python
+    task_date: 18/02/2021
+  - task_description: Understanding of concepts, finding paper related to python
+    task_date: 18/02/2021
+  - task_description: Understanding of concepts, finding paper related to python
+    task_date: 18/02/2021
+  - task_description: Understanding of concepts, finding paper related to python
+    task_date: 18/02/2021
